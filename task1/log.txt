@@ -1,0 +1,11 @@
+commit 9d399f2e8d6ad8ea6476570c539535baa0ac8f2a (HEAD -> master)
+Author: Alexandr Kovalchuk <skateray17@gmail.com>
+Date:   Wed Feb 7 00:31:15 2018 +0300
+
+    Added status.txt
+
+commit e733a1cdaf6cfa18f82571e23fb33ad1db6aba9c
+Author: Alexandr Kovalchuk <skateray17@gmail.com>
+Date:   Wed Feb 7 00:28:50 2018 +0300
+
+    added .gitignore
