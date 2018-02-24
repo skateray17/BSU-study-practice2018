@@ -191,18 +191,25 @@ li{
     margin: auto 0;
 }
 
-.editDeletePopup{
+.profilePopup, .editDeletePopup{
     display:none;
-    margin-left:-30px;
     background:white;
     font-size: 15px;
+}
+
+.profilePopup{
+    margin-left:-50px;
+}
+
+.editDeletePopup{
+    margin-left:-30px;
 }
 
 .editDelete{
     margin: auto 0 auto auto;
 }
 
-.editDelete:hover .editDeletePopup{
+.editDelete:hover .editDeletePopup, .editDelete:hover .profilePopup{
     display:flex;
     flex-direction: column;
     position:absolute;
