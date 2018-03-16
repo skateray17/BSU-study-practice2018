@@ -38,8 +38,8 @@ class PhotoPosts {
     let filtered = this.arr
       .filter((a) => (filter.authors instanceof Array ? filter.authors.includes(a.author) : true) &&
         (filter.tags instanceof Array ? filter.tags.every(el => a.tags.includes(el)) : true) &&
-        (filter.startDate instanceof Date ? a.publDate >= filter.startDate : true) &&
-        (filter.endDate instanceof Date ? a.publDate <= filter.endDate : true));
+        (filter.startDate instanceof Date ? new Date(a.publDate) >= filter.startDate : true) &&
+        (filter.endDate instanceof Date ? new Date(a.publDate) <= filter.endDate : true));
     return { 
       arr: filtered.slice(skip, skip + top),
       finished: skip + top >= filtered.length, 

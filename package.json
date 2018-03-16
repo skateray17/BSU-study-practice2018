@@ -1,0 +1,27 @@
+{
+  "name": "bsu-study-practice2018",
+  "version": "1.0.0",
+  "description": "",
+  "main": "UI/js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skateray17/BSU-study-practice2018.git"
+  },
+  "author": "Alexander Kovalchuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skateray17/BSU-study-practice2018/issues"
+  },
+  "homepage": "https://github.com/skateray17/BSU-study-practice2018#readme",
+  "devDependencies": {
+    "webpack-cli": "^2.0.9"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "uuid": "^3.2.1",
+    "webpack": "^4.1.1"
+  }
+}

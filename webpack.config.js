@@ -5,5 +5,5 @@ module.exports = {
     path: __dirname + '/UI/js/',
     library: 'skatLib',
   },
-  mode: 'production',
+  mode: 'development',
 };
