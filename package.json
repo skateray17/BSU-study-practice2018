@@ -2,7 +2,7 @@
   "name": "bsu-study-practice2018",
   "version": "1.0.0",
   "description": "",
-  "main": "UI/js/index.js",
+  "main": "./app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
