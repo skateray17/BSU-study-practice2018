@@ -30,6 +30,7 @@ function createSomePosts(){
 }
 
 module.exports = function(){
+  console.log(4);
   window.localStorage.setItem('posts', JSON.stringify(createSomePosts()));
   window.localStorage.setItem('user', JSON.stringify(null));
   window.localStorage.setItem('passwordsHashs', JSON.stringify(passwordsHashs));

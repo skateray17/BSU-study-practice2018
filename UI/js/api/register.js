@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const uuidv4 = require('uuid/v4');
-const showMainPage = require('./showListOfPosts');
 
 module.exports = function() {
   const hashs = JSON.parse(window.localStorage.passwordsHashs);
@@ -28,5 +27,5 @@ module.exports = function() {
   };
   window.localStorage.setItem('passwordsHashs', JSON.stringify(hashs));
   window.localStorage.setItem('user', JSON.stringify(nick.value));
-  showMainPage();
+  require('./showListOfPosts')();
 };

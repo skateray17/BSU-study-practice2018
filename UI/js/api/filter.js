@@ -1,5 +1,3 @@
-const showMainPage = require('./showListOfPosts');
-
 module.exports = function() {
   const filter = {};
   const str = document.getElementsByClassName('filterByTagAndName')[0].value;
@@ -22,5 +20,5 @@ module.exports = function() {
   if(tags){
     filter.tags = tags;
   }
-  showMainPage(filter);
+  require('./showListOfPosts')(filter);
 };

@@ -7,21 +7,21 @@ module.exports = function() {
           <div class="verticalLine"></div>
           <p class="appName"><b>Ugagram</b></p>
         </a>
-        <form class="search flex" onsubmit="skatLib.filter()">
+        <form class="search flex">
           <div class="help">You may search for A's and B's post, tagged with #c#d via typing "A B #c#d"</div>
           <input class="filterByTagAndName center" type="text" placeholder="Search">
           <div class="dateRange flex">
             <i class="material-icons center font30">date_range</i>
             <div class="dateInputs">
               <i>from:</i>
-              <input type="date">
+              <input type="date" min="1979-12-31">
               <i>to:</i>
-              <input type="date">
+              <input type="date" min="1979-12-31">
             </div>                
           </div>   
         </form>
         <div class="userButtons flex">
-          ${JSON.parse(window.localStorage.user) ? `<a href="#" onclick="skatLib.createPostPlace(event)">
+          ${JSON.parse(window.localStorage.user) ? `<a href="#" class="postCreateButton">
             <i class="font40 center"><b>+</b></i>
           </a>` : '' }
           <div class="editDelete">
@@ -32,9 +32,8 @@ module.exports = function() {
             </a>
             <div class="profilePopup">
               ${JSON.parse(window.localStorage.user) ? `<b>${JSON.parse(window.localStorage.user)}</b>
-              <!--<a href="#" class="editDeleteMenuItem">Edit profile</a>-->
-              <a href="#" class="editDeleteMenuItem" onClick="skatLib.logoff(event)">Logout</a>` : `
-              <a href="#" class="editDeleteMenuItem" onClick="skatLib.redirectToLogin(event)">Login</a>`}
+              <a href="#" class="editDeleteMenuItem">Logout</a>` : `
+              <a href="#" class="editDeleteMenuItem">Login</a>`}
             </div>
           </div>
         </div>

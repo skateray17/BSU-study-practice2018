@@ -306,6 +306,7 @@ footer{
   width: 100%;
   max-width: 350px;
   padding: 10px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -365,4 +366,10 @@ footer{
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.addUrl, .addDescr{
+  width: 80%;
+  border-width:1px; 
+  border-style:solid;
 }

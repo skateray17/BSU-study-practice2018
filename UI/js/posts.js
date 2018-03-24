@@ -1,14 +1,14 @@
 const { PhotoPosts } = require('../../task4/photoPosts');
-
+const { editPostPlace } = require('./api/postsEditing');
 /**
  * 
  * @param {PhotoPost} post 
  */
 function addPost(post) {
   const photoPosts = JSON.parse(window.localStorage.posts);
-  if (PhotoPosts.prototype.addPost.apple(photoPosts, post)) {
+  if (PhotoPosts.prototype.addPost.call(photoPosts, post)) {
     let i = photoPosts.arr.indexOf(post);
-    let ul = document.getElementsByTagName('ul')[0];
+    let ul = document.querySelector('ul');
     if (i < ul.childNodes.length) {
       ul.insertBefore(createPostHtml(post), ul.childNodes[i]);
     }
@@ -24,10 +24,17 @@ function addPosts(filter) {
   const ul = document.getElementsByTagName('ul')[0];
   if (filter && typeof (filter) === 'object') {
     ul.innerHTML = '';
-    document.getElementsByTagName('button')[0].style = 'display:static';
-    getPostsFunc = (() => { let viewed = 0; return function () { 
-      return viewed += 5, PhotoPosts.prototype.getPhotoPosts.call(JSON.parse(window.localStorage.posts), viewed - 5, 5, filter);//photoPosts.getPhotoPosts(viewed - 5, 5, filter); 
-    }; })();
+    document.getElementsByTagName('button')[0].style = 'display:block';
+    getPostsFunc = (() => { 
+      let viewed = 0; 
+      const { arr: posts } = PhotoPosts.prototype.getPhotoPosts.call(JSON.parse(window.localStorage.posts), 0, Infinity, filter); 
+      return function () { 
+        return viewed += 5, { 
+          arr: posts.slice(viewed - 5, viewed),
+          finished: viewed >= posts.length, 
+        };
+      }; 
+    })();
   }
   if (typeof (getPostsFunc) !== 'function') {
     return false;
@@ -62,7 +69,7 @@ function createPostHtml(post) {
           </a>    
         <div class="editDeletePopup">
           <a href="#" class="editDeleteMenuItem">Edit</a>
-          <a href="#" class="editDeleteMenuItem" onclick="skatLib.deleteEl(event)">Delete</a>
+          <a href="#" class="editDeleteMenuItem">Delete</a>
         </div>
       </div>`: '' }
     </header>
@@ -78,8 +85,14 @@ function createPostHtml(post) {
       <a class="username" href="#"><b>${post.author}:</b></a>
       <span>${post.description}</span>
     </div>
-    <span class="publDate">${post.publDate.toLocaleString()}</span>`;
+    <span class="publDate">${new Date(post.publDate).toLocaleString()}</span>`;
   li.childNodes[4].childNodes[1].addEventListener('click', like);
+  const editButtons = li.querySelectorAll('.editDeleteMenuItem');
+  if(editButtons.length){
+    editButtons[0].addEventListener('click', editPostPlace);
+    editButtons[1].addEventListener('click', deleteEl);
+  }
+  // li.querySelectorAll('.editDeleteMenuItem')[1].addEventListener('click', deleteEl);
   return li;
 }
 
@@ -88,7 +101,7 @@ function editPhotoPost(id, post) {
   if (PhotoPosts.prototype.editPhotoPost.call(photoPosts, id, post)) {
     const childNode = document.getElementById(`post${id}`);
     if (childNode) {
-      document.getElementsByTagName('ul')[0].replaceChild(createPostHtml(photoPosts.getPhotoPost(id)), childNode);
+      document.getElementsByTagName('ul')[0].replaceChild(createPostHtml(PhotoPosts.prototype.getPhotoPost.call(photoPosts, id)), childNode);
     }
     window.localStorage.setItem('posts', JSON.stringify(photoPosts));
     return true;
@@ -114,7 +127,7 @@ function like(event) {
   if (!JSON.parse(window.localStorage.user))
     return;
   const photoPosts = JSON.parse(window.localStorage.posts);
-  const id = Number.parseInt(event.target.parentNode.parentNode.id.substr(4), 10);
+  const id = Number.parseInt(event.target.closest('li').id.substr(4), 10);
   const post = PhotoPosts.prototype.getPhotoPost.call(photoPosts, id.toString());//photoPosts.getPhotoPost(id.toString());
   if (!post) return;
   let ind = post.likes.indexOf(JSON.parse(window.localStorage.user));
@@ -133,7 +146,7 @@ function like(event) {
 
 function deleteEl(e) {
   e.preventDefault();
-  const id = e.target.parentNode.parentNode.parentNode.parentNode.id.substr(4);
+  const id = e.target.closest('li').id.substr(4);
   return removePhotoPost(id);
 }
 
@@ -143,4 +156,5 @@ module.exports = {
   removePhotoPost,
   deleteEl,
   editPhotoPost,
+  createPostHtml,
 };

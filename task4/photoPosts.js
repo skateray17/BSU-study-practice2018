@@ -13,11 +13,12 @@ class PhotoPosts {
   addPost(post) {
     if (!(post instanceof PhotoPost) || !post.validate()) {
       console.log('Incorrect post');
+      console.log(post instanceof PhotoPost, post.validate());
       return false;
     }
     if (!this.arr.find((el) => el._id === post._id)) {
       this.arr.push(post);
-      this.arr.sort((a, b) => b.publDate - a.publDate);
+      this.arr.sort((a, b) => new Date(b.publDate) - new Date(a.publDate));
       return true;
     }
     return false;
@@ -76,7 +77,10 @@ class PhotoPosts {
       tmp[prop] = newPost[prop] !== undefined ? newPost[prop] : tmp[prop];
     }
     tmp.tags = tmp.description.match(/#[^\s#]*/g);
-    if (!tmp.validate()) {
+    if(tmp.publDate){
+      tmp.publDate = new Date(tmp.publDate);
+    }
+    if (!PhotoPost.prototype.validate.call(tmp)) {
       console.log('Incorrect post editing');
       return false;
     }

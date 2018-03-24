@@ -1,4 +1,7 @@
-let _id = 1;
+let _id =localStorage.posts ?
+  JSON.parse(localStorage.posts).arr.reduce((prev, cur) => Number.parseInt(cur._id) > prev ? 
+    Number.parseInt(cur._id) + 1 : prev, 1) : 1;
+
 class PhotoPost {
   /**
    * gets tags from description
@@ -18,11 +21,11 @@ class PhotoPost {
     this._id = (_id++).toString();
     this.description = description;
     this.photoLink = photoLink;
-    this.tags = description.match(/#[^\s#]*/g);
+    this.tags = description.match(/#[^\s#]*/g) || [];
   }
 
   validate() {
-    if (typeof (this.author) !== 'string' || typeof (this.description) !== 'string' || !this.description ||
+    if (typeof (this.author) !== 'string' || typeof (this.description) !== 'string' ||
       !this.publDate || !this.author || !this.photoLink || typeof (this.photoLink) !== 'string' ||
       !(this.likes instanceof Array) || !this.likes.reduce((pr, el) => typeof el === 'string', true) ||
       typeof (this._id) !== 'string' || !(this.publDate instanceof Date)) {
