@@ -7,24 +7,17 @@ const requestHandler = (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     fs.createReadStream('./public/UI/index.html').pipe(res);
   } else {
-    let tmp = req.url.match(/\/public\/.*\.js/);
-    if(tmp && tmp[0]===req.url){
-      res.writeHead(200, {'Content-Type': 'application/javascript'});
-      fs.createReadStream(__dirname + req.url).pipe(res);
-    } else {
-      tmp = req.url.match(/\/public\/.*\.css/);
-      if(tmp && tmp[0]===req.url){
-        res.writeHead(200, {'Content-Type': 'text/css'});
+    if(req.url.startsWith('/public/')){
+      if(fs.existsSync(__dirname + req.url)){
         fs.createReadStream(__dirname + req.url).pipe(res);
       } else {
-        tmp = req.url.match(/\/public\/.*\.png/);
-        if(tmp && tmp[0]===req.url){
-          res.writeHead(200, {'Content-Type': 'image/png'});
-          fs.createReadStream(__dirname + req.url).pipe(res);
-        } else {
-          res.end(404);
-        } 
+        console.log(req.url);
+        res.statusCode = 404;
+        res.end();
       }
+    } else {
+      res.statusCode = 403;
+      res.end();
     }
   }
 };

@@ -25,7 +25,7 @@ photoPosts.addPost(new PhotoPost('lol', '2018-22-02T12:24:52', 'fdaf#asfa', '#',
 photoPosts.addPost(new PhotoPost('lol', '2018-22-02T12:24:53', 'fdaf#asfa', '#', ['lol', 'kek']));
 
 
-console.log('-getPhotoPosts')
+console.log('-getPhotoPosts');
 console.log('10 posts:');
 console.log(photoPosts.getPhotoPosts());
 console.log('3 posts start from the second:');
@@ -34,11 +34,11 @@ console.log('skip = 6 and default-argument for top:');
 console.log(photoPosts.getPhotoPosts(6));
 console.log('posts after filtering:');
 console.log(photoPosts.getPhotoPosts(0, 10, {
-    authors: ['lol', 'kek'],
-    tags: ['#asfa', '#fdfd'],
-    startDate: new Date(2018, 0, 0),
+  authors: ['lol', 'kek'],
+  tags: ['#asfa', '#fdfd'],
+  startDate: new Date(2018, 0, 0),
 }));
-console.log('with invalid argument:')
+console.log('with invalid argument:');
 console.log(photoPosts.getPhotoPosts('argument'));
 console.log('');
 console.log('-getPhotoPost');
@@ -74,8 +74,8 @@ console.log('id=3 post before editing:');
 console.log(photoPosts.getPhotoPost('3'));
 console.log('try to edit id=3 post:');
 console.log(photoPosts.editPhotoPost('3', {
-    description: 'new description',
-    likes: [],
+  description: 'new description',
+  likes: [],
 }));
 console.log('id=3 post after editing:');
 console.log(photoPosts.getPhotoPost('3'));
@@ -93,6 +93,6 @@ console.log('all posts: ');
 console.log(photoPosts);
 
 module.exports = {
-    PhotoPost,
-    PhotoPosts,
-}
+  PhotoPost,
+  PhotoPosts,
+};
