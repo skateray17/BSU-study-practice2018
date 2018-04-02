@@ -45,6 +45,7 @@ function addPosts(filter) {
         const response = JSON.parse(xhr.response);
         if (response.success) {
           posts = { arr: response.extras.posts, };
+          posts.arr.sort((a, b) => new Date(b.publDate) - new Date(a.publDate));
           ul.innerHTML = '';
           document.getElementsByTagName('button')[0].style = 'display:block';
           getPostsFunc = (() => {
@@ -174,9 +175,8 @@ function like(event) {
   event.preventDefault();
   if (!useraaa)
     return;
-  const photoPosts = JSON.parse(window.localStorage.posts);
-  const id = Number.parseInt(event.target.closest('li').id.substr(4), 10);
-  const post = PhotoPosts.prototype.getPhotoPost.call(photoPosts, id.toString());//photoPosts.getPhotoPost(id.toString());
+  const id = event.target.closest('li').id.substr(4);
+  const post = PhotoPosts.prototype.getPhotoPost.call(posts, id);//photoPosts.getPhotoPost(id.toString());
   if (!post) return;
   let ind = post.likes.indexOf(useraaa);
   if (ind === -1) {
@@ -189,7 +189,10 @@ function like(event) {
     event.target.innerHTML = 'favorite_border';
   }
   event.target.parentNode.nextSibling.nextSibling.innerHTML = `<i><b>${post.likes.length} likes</i></b>`;
-  window.localStorage.setItem('posts', JSON.stringify(photoPosts));
+  let xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/posts/editpost');
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.send(`id=${id}&likes=${JSON.stringify(post.likes)}`);
 }
 
 function deleteEl(e) {
@@ -222,6 +225,10 @@ function setUser(us){
   useraaa = us;
 }
 
+function getPosts(){
+  return posts();
+}
+
 module.exports = {
   addPost,
   addPosts,
@@ -229,7 +236,7 @@ module.exports = {
   deleteEl,
   editPhotoPost,
   createPostHtml,
-  posts,
+  getPosts,
   firstLoad,
   deleteUser,
   getUser,

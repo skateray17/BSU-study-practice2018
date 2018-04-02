@@ -35,7 +35,7 @@ function reset(event){
   if(li.id){
     const id = li.id.substr(4);
     li.replaceWith(require('../posts').createPostHtml(
-      PhotoPosts.prototype.getPhotoPost.call(JSON.parse(window.localStorage.posts), id)));
+      PhotoPosts.prototype.getPhotoPost.call(require('../posts').getPosts(), id)));
   } else {
     li.remove();
   }
