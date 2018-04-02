@@ -11,11 +11,6 @@ class PhotoPosts {
    * @returns {Boolean} true if success, false if failure
    */
   addPost(post) {
-    if (!(post instanceof PhotoPost) || !post.validate()) {
-      console.log('Incorrect post');
-      console.log(post instanceof PhotoPost, post.validate());
-      return false;
-    }
     if (!this.arr.find((el) => el._id === post._id)) {
       this.arr.push(post);
       this.arr.sort((a, b) => new Date(b.publDate) - new Date(a.publDate));

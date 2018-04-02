@@ -51,7 +51,7 @@ function edit(event){
       photoLink: li.querySelector('.addUrl').value,
     });
   } else {
-    const post = new PhotoPost(JSON.parse(window.localStorage.getItem('user')), Date.now(), 
+    const post = new PhotoPost(require('../posts').getUser(), Date.now(), 
       li.querySelector('.addDescr').innerText, li.querySelector('.addUrl').value, []);
     document.querySelector('ul').removeChild(document.querySelector('.editPost'));
     require('../posts').addPost(post);

@@ -11,7 +11,7 @@ module.exports = function(){
         <input class="logonPassword" type="password" placeholder="Password Confirm">
         <input class="logonButton" type="submit" value="Register">
       </form>  
-      <a href="#" class="reditToLogon">Already have an account?</a>
+      <a href="#" class="redirectToLogon">Already have an account?</a>
     </div>
   </div>`;
 };

@@ -1,9 +1,9 @@
 module.exports = {
-  entry: './UI/js/index.js',
+  entry: './public/UI/js/index.js',
   output: {
     filename: 'build.js',
-    path: __dirname + '/UI/js/',
+    path: __dirname + '/public/UI/js/',
     library: 'skatLib',
   },
-  mode: 'development',
+  mode: 'production',
 };

@@ -21,7 +21,7 @@ module.exports = function() {
           </div>   
         </form>
         <div class="userButtons flex">
-          ${JSON.parse(window.localStorage.user) ? `<a href="#" class="postCreateButton">
+          ${require('../posts').getUser() ? `<a href="#" class="postCreateButton">
             <i class="font40 center"><b>+</b></i>
           </a>` : '' }
           <div class="editDelete">
@@ -31,7 +31,7 @@ module.exports = function() {
               </i>
             </a>
             <div class="profilePopup">
-              ${JSON.parse(window.localStorage.user) ? `<b>${JSON.parse(window.localStorage.user)}</b>
+              ${require('../posts').getUser() ? `<b>${require('../posts').getUser()}</b>
               <a href="#" class="editDeleteMenuItem">Logout</a>` : `
               <a href="#" class="editDeleteMenuItem">Login</a>`}
             </div>
@@ -48,7 +48,7 @@ module.exports = function() {
       <div class="footerInfo">
         <p>All content c 2018 Alexander Kovalchuk</p>
         <p>FAMCS, group 5</p>
-        <p>last update: 14.03.2018</p>
+        <p>last update: 02.04.2018</p>
       </div>
       <div class="contacts">
         <p>Contact Email: <b>skateray17@gmail.com</b></p>

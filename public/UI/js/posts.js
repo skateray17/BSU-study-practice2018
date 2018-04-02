@@ -1,21 +1,35 @@
 const { PhotoPosts } = require('../../task4/photoPosts');
 const { editPostPlace } = require('./api/postsEditing');
+
+let useraaa;
+let posts;
 /**
  * 
  * @param {PhotoPost} post 
  */
 function addPost(post) {
-  const photoPosts = JSON.parse(window.localStorage.posts);
-  if (PhotoPosts.prototype.addPost.call(photoPosts, post)) {
-    let i = photoPosts.arr.indexOf(post);
-    let ul = document.querySelector('ul');
-    if (i < ul.childNodes.length) {
-      ul.insertBefore(createPostHtml(post), ul.childNodes[i]);
+  let xhr = new XMLHttpRequest();
+  xhr.open('PUT', '/api/posts/createpost');
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      const response = JSON.parse(xhr.response);
+      if (response.success) {
+        PhotoPosts.prototype.addPost.call(posts, response.extras.post);
+        let i = posts.arr.indexOf(response.extras.post);
+        let ul = document.querySelector('ul');
+        if (i < ul.childNodes.length) {
+          ul.insertBefore(createPostHtml(post), ul.childNodes[i]);
+        }
+      } else {
+        console.log(response.extras);
+      }
+    } else {
+      console.log(JSON.parse(xhr.response).extras);
     }
-    window.localStorage.setItem('posts', JSON.stringify(photoPosts));
-    return true;
-  }
-  return false;
+  };
+  console.log(post);
+  xhr.send(`photourl=${post.photoLink}&description=${post.description}`);
 }
 
 let getPostsFunc;
@@ -23,30 +37,45 @@ let getPostsFunc;
 function addPosts(filter) {
   const ul = document.getElementsByTagName('ul')[0];
   if (filter && typeof (filter) === 'object') {
-    ul.innerHTML = '';
-    document.getElementsByTagName('button')[0].style = 'display:block';
-    getPostsFunc = (() => { 
-      let viewed = 0; 
-      const { arr: posts } = PhotoPosts.prototype.getPhotoPosts.call(JSON.parse(window.localStorage.posts), 0, Infinity, filter); 
-      return function () { 
-        return viewed += 5, { 
-          arr: posts.slice(viewed - 5, viewed),
-          finished: viewed >= posts.length, 
-        };
-      }; 
-    })();
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/posts/getposts');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.response);
+        if (response.success) {
+          posts = { arr: response.extras.posts, };
+          ul.innerHTML = '';
+          document.getElementsByTagName('button')[0].style = 'display:block';
+          getPostsFunc = (() => {
+            let viewed = 0;
+            const { arr: postss } = PhotoPosts.prototype.getPhotoPosts.call(posts, 0, Infinity, filter);
+            return function () {
+              return viewed += 5, {
+                arr: postss.slice(viewed - 5, viewed),
+                finished: viewed >= postss.length,
+              };
+            };
+          })();
+          addPosts();
+        }
+      }
+    };
+    xhr.send();
   }
-  if (typeof (getPostsFunc) !== 'function') {
-    return false;
+  else {
+    if (typeof (getPostsFunc) !== 'function') {
+      return false;
+    }
+    const { arr: postss, finished } = getPostsFunc();
+    for (let i = 0; i < postss.length; i++) {
+      ul.appendChild(createPostHtml(postss[i]));
+    }
+    if (finished) {
+      document.getElementsByTagName('button')[0].style = 'display:none';
+    }
+    return true;
   }
-  const { arr: posts, finished } = getPostsFunc();
-  for (let i = 0; i < posts.length; i++) {
-    ul.appendChild(createPostHtml(posts[i]));
-  }
-  if (finished) {
-    document.getElementsByTagName('button')[0].style = 'display:none';
-  }
-  return true;
 }
 
 /**
@@ -63,7 +92,7 @@ function createPostHtml(post) {
         <img class="userAvatar" src="https://uc.uxpin.com/files/839015/832598/image-612fd1.png">
       </a>
       <a class="username" href="#"><b>${post.author}</b></a>
-        ${ JSON.parse(window.localStorage.user) === post.author ? `<div class="editDelete">
+        ${ useraaa === post.author ? `<div class="editDelete">
           <a href="#">
             <i class="material-icons">edit</i>
           </a>    
@@ -71,12 +100,12 @@ function createPostHtml(post) {
           <a href="#" class="editDeleteMenuItem">Edit</a>
           <a href="#" class="editDeleteMenuItem">Delete</a>
         </div>
-      </div>`: '' }
+      </div>`: ''}
     </header>
     <img class="photo" src="${post.photoLink}">
     <a href="#" class="star">
-      <i class="material-icons font40"${ post.likes.includes(JSON.parse(window.localStorage.user)) 
-        ? 'style="color:red"> favorite' : '>favorite_border' }</i>
+      <i class="material-icons font40"${ post.likes.includes(useraaa)
+      ? 'style="color:red"> favorite' : '>favorite_border'}</i>
     </a>
     <div class="amountOfLikes">
       <i><b>${post.likes.length} likes</b></i>
@@ -88,51 +117,70 @@ function createPostHtml(post) {
     <span class="publDate">${new Date(post.publDate).toLocaleString()}</span>`;
   li.childNodes[4].childNodes[1].addEventListener('click', like);
   const editButtons = li.querySelectorAll('.editDeleteMenuItem');
-  if(editButtons.length){
+  if (editButtons.length) {
     editButtons[0].addEventListener('click', editPostPlace);
     editButtons[1].addEventListener('click', deleteEl);
   }
-  // li.querySelectorAll('.editDeleteMenuItem')[1].addEventListener('click', deleteEl);
   return li;
 }
 
 function editPhotoPost(id, post) {
-  const photoPosts = JSON.parse(window.localStorage.posts);
-  if (PhotoPosts.prototype.editPhotoPost.call(photoPosts, id, post)) {
-    const childNode = document.getElementById(`post${id}`);
-    if (childNode) {
-      document.getElementsByTagName('ul')[0].replaceChild(createPostHtml(PhotoPosts.prototype.getPhotoPost.call(photoPosts, id)), childNode);
+  let xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/posts/editpost');
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      const response = JSON.parse(xhr.response);
+      if (response.success) {
+        PhotoPosts.prototype.editPhotoPost.call(posts, id, post);
+        const childNode = document.getElementById(`post${id}`);
+        if (childNode) {
+          document.getElementsByTagName('ul')[0].replaceChild(createPostHtml(PhotoPosts.prototype.getPhotoPost.call(posts, id)), childNode);
+        }
+      } else {
+        console.log(response.extras);
+      }
+    } else {
+      console.log(JSON.parse(xhr.response).extras);
     }
-    window.localStorage.setItem('posts', JSON.stringify(photoPosts));
-    return true;
-  }
-  return false;
+  };
+  xhr.send(`photourl=${post.photoLink}&description=${post.description}&id=${id}`);
 }
 
 function removePhotoPost(id) {
-  const photoPosts = JSON.parse(window.localStorage.posts);
-  if (PhotoPosts.prototype.removePhotoPost.call(photoPosts, id)) {//photoPosts.removePhotoPost(id)) {
-    const childNode = document.getElementById(`post${id}`);
-    if (childNode) {
-      document.getElementsByTagName('ul')[0].removeChild(childNode);
+  let xhr = new XMLHttpRequest();
+  xhr.open('DELETE', '/api/posts/removepost');
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      const response = JSON.parse(xhr.response);
+      if (response.success) {
+        PhotoPosts.prototype.removePhotoPost.call(posts, id);
+        const childNode = document.getElementById(`post${id}`);
+        if (childNode) {
+          document.getElementsByTagName('ul')[0].removeChild(childNode);
+        }
+      } else {
+        console.log(response.extras);
+      }
+    } else {
+      console.log(JSON.parse(xhr.response).extras);
     }
-    window.localStorage.setItem('posts', JSON.stringify(photoPosts));
-    return true;
-  }
-  return false;
+  };
+  xhr.send(`id=${id}`);
 }
 
 function like(event) {
   event.preventDefault();
-  if (!JSON.parse(window.localStorage.user))
+  if (!useraaa)
     return;
   const photoPosts = JSON.parse(window.localStorage.posts);
   const id = Number.parseInt(event.target.closest('li').id.substr(4), 10);
   const post = PhotoPosts.prototype.getPhotoPost.call(photoPosts, id.toString());//photoPosts.getPhotoPost(id.toString());
   if (!post) return;
-  let ind = post.likes.indexOf(JSON.parse(window.localStorage.user));
+  let ind = post.likes.indexOf(useraaa);
   if (ind === -1) {
-    post.likes.push(JSON.parse(window.localStorage.user));
+    post.likes.push(useraaa);
     event.target.style = 'color:red';
     event.target.innerHTML = 'favorite';
   } else {
@@ -150,6 +198,30 @@ function deleteEl(e) {
   return removePhotoPost(id);
 }
 
+function firstLoad() {
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', '/api/account/user');
+  xhr.onload = () => {
+    if(xhr.status === 200){
+      useraaa = JSON.parse(xhr.response).extras.user;
+    }
+    require('./api/showListOfPosts')({});
+  };
+  xhr.send();
+}
+
+function deleteUser() {
+  useraaa = null;
+}
+
+function getUser(){
+  return useraaa;
+}
+
+function setUser(us){
+  useraaa = us;
+}
+
 module.exports = {
   addPost,
   addPosts,
@@ -157,4 +229,9 @@ module.exports = {
   deleteEl,
   editPhotoPost,
   createPostHtml,
+  posts,
+  firstLoad,
+  deleteUser,
+  getUser,
+  setUser,
 };

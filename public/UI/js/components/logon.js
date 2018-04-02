@@ -1,7 +1,3 @@
-
-/**
- * @description signUp and restoring password will be done after connecting express+mongoDB
- */
 module.exports = function(){
   return `<div class="logonBackground">
       <div class="logonDiv">
@@ -12,7 +8,7 @@ module.exports = function(){
           <input class="logonPassword" type="password" placeholder="Password" required>
           <input class="logonButton" type="submit" value="Logon">
         </form>  
-        <a href="#">Forgot your password?</a>
+        <a class="reset-pwd" href="#">Forgot your password?</a>
       </div>
       <div class="signUpOffer">
         <span>Don't have an account?</span>

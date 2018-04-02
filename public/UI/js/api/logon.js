@@ -1,19 +1,15 @@
-const { pbkdf2Sync } = require('crypto');
-
 module.exports = function(e){
   e.preventDefault();
   const email = document.getElementsByClassName('logonEmail')[0].value;
   const password = document.getElementsByClassName('logonPassword')[0].value;
-  const passwordsHashs = JSON.parse(window.localStorage.getItem('passwordsHashs'));
-  if(passwordsHashs[email]) {
-    const hash = pbkdf2Sync(password, passwordsHashs[email].salt, 1000, 64, 'sha512').toString('hex');
-    if(hash !== passwordsHashs[email].hash){
-      console.log('Wrong password');
-    } else {
-      window.localStorage.setItem('user', JSON.stringify(passwordsHashs[email].nick));
+  let xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/account/logon');
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.onload = () => {
+    if (xhr.status === 200 && JSON.parse(xhr.response).success) {
+      require('../posts').setUser(JSON.parse(xhr.response).extras.userProfileModel.nickname);
       require('./showListOfPosts')();
     }
-  } else {
-    console.log('user doesn\'t exists');
-  }
+  };
+  xhr.send(`email=${email}&password=${password}`);
 };

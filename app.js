@@ -1,14 +1,15 @@
 const http = require('http');
 const fs = require('fs');
+
 const port = 3000;
 
 const requestHandler = (req, res) => {
-  if(req.url === '/'){ 
-    res.writeHead(200, {'Content-Type': 'text/html'});
+  if (req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
     fs.createReadStream('./public/UI/index.html').pipe(res);
   } else {
-    if(req.url.startsWith('/public/')){
-      if(fs.existsSync(__dirname + req.url)){
+    if (req.url.startsWith('/public/')) {
+      if (fs.existsSync(__dirname + req.url)) {
         fs.createReadStream(__dirname + req.url).pipe(res);
       } else {
         console.log(req.url);

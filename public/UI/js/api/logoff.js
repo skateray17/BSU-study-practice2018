@@ -1,5 +1,12 @@
 module.exports = function(e){
   e.preventDefault();
-  window.localStorage.setItem('user', JSON.stringify(null));
-  require('./showListOfPosts')();
+  let xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/account/logoff');
+  xhr.onload = () => {
+    if (xhr.status === 200 && JSON.parse(xhr.response).success) {
+      require('../posts').deleteUser();
+      require('./showListOfPosts')();
+    }
+  };
+  xhr.send();
 };
